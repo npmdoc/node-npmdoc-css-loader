@@ -1,11 +1,13 @@
 # api documentation for  [css-loader (v0.28.0)](https://github.com/webpack/css-loader#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-css-loader.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-css-loader) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-css-loader.svg)](https://travis-ci.org/npmdoc/node-npmdoc-css-loader)
 #### css loader module for webpack
 
-[![NPM](https://nodei.co/npm/css-loader.png?downloads=true)](https://www.npmjs.com/package/css-loader)
+[![NPM](https://nodei.co/npm/css-loader.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/css-loader)
 
-[![apidoc](https://npmdoc.github.io/node-npmdoc-css-loader/build/screen-capture.buildNpmdoc.browser._2Fhome_2Ftravis_2Fbuild_2Fnpmdoc_2Fnode-npmdoc-css-loader_2Ftmp_2Fbuild_2Fapidoc.html.png)](https://npmdoc.github.io/node-npmdoc-css-loader/build..beta..travis-ci.org/apidoc.html)
+[![apidoc](https://npmdoc.github.io/node-npmdoc-css-loader/build/screenCapture.buildCi.browser.apidoc.html.png)](https://npmdoc.github.io/node-npmdoc-css-loader/build/apidoc.html)
 
-![package-listing](https://npmdoc.github.io/node-npmdoc-css-loader/build/screen-capture.npmPackageListing.svg)
+![npmPackageListing](https://npmdoc.github.io/node-npmdoc-css-loader/build/screenCapture.npmPackageListing.svg)
+
+![npmPackageDependencyTree](https://npmdoc.github.io/node-npmdoc-css-loader/build/screenCapture.npmPackageDependencyTree.svg)
 
 
 
@@ -61,41 +63,32 @@
     "license": "MIT",
     "maintainers": [
         {
-            "name": "bebraw",
-            "email": "bebraw@gmail.com"
+            "name": "bebraw"
         },
         {
-            "name": "d3viant0ne",
-            "email": "wiens.joshua@gmail.com"
+            "name": "d3viant0ne"
         },
         {
-            "name": "ericclemmons",
-            "email": "eric@smarterspam.com"
+            "name": "ericclemmons"
         },
         {
-            "name": "jhnns",
-            "email": "mail@johannesewald.de"
+            "name": "jhnns"
         },
         {
-            "name": "markdalgleish",
-            "email": "mark.john.dalgleish@gmail.com"
+            "name": "markdalgleish"
         },
         {
-            "name": "sokra",
-            "email": "tobias.koppers@googlemail.com"
+            "name": "sokra"
         },
         {
-            "name": "spacek33z",
-            "email": "kees@webduck.nl"
+            "name": "spacek33z"
         },
         {
-            "name": "thelarkinn",
-            "email": "sean.larkin@cuw.edu"
+            "name": "thelarkinn"
         }
     ],
     "name": "css-loader",
     "optionalDependencies": {},
-    "readme": "ERROR: No README data found!",
     "repository": {
         "type": "git",
         "url": "git+ssh://git@github.com/webpack/css-loader.git"
@@ -118,10 +111,161 @@
 # <a name="apidoc.tableOfContents"></a>[table of contents](#apidoc.tableOfContents)
 
 #### [module css-loader](#apidoc.module.css-loader)
+1.  [function <span class="apidocSignatureSpan"></span>css-loader (content, map)](#apidoc.element.css-loader.css-loader)
+1.  [function <span class="apidocSignatureSpan">css-loader.</span>toString ()](#apidoc.element.css-loader.toString)
 
 
 
 # <a name="apidoc.module.css-loader"></a>[module css-loader](#apidoc.module.css-loader)
+
+#### <a name="apidoc.element.css-loader.css-loader"></a>[function <span class="apidocSignatureSpan"></span>css-loader (content, map)](#apidoc.element.css-loader.css-loader)
+- description and source-code
+```javascript
+css-loader = function (content, map) {
+	if(this.cacheable) this.cacheable();
+	var callback = this.async();
+	var query = loaderUtils.getOptions(this) || {};
+	var root = query.root;
+	var moduleMode = query.modules || query.module;
+	var camelCaseKeys = query.camelCase || query.camelcase;
+	var resolve = createResolver(query.alias);
+
+	if(map !== null && typeof map !== "string") {
+		map = JSON.stringify(map);
+	}
+
+	processCss(content, map, {
+		mode: moduleMode ? "local" : "global",
+		from: loaderUtils.getRemainingRequest(this),
+		to: loaderUtils.getCurrentRequest(this),
+		query: query,
+		minimize: this.minimize,
+		loaderContext: this
+	}, function(err, result) {
+		if(err) return callback(err);
+
+		var cssAsString = JSON.stringify(result.source);
+
+		// for importing CSS
+		var importUrlPrefix = getImportPrefix(this, query);
+
+		var alreadyImported = {};
+		var importJs = result.importItems.filter(function(imp) {
+			if(!imp.mediaQuery) {
+				if(alreadyImported[imp.url])
+					return false;
+				alreadyImported[imp.url] = true;
+			}
+			return true;
+		}).map(function(imp) {
+			if(!loaderUtils.isUrlRequest(imp.url, root)) {
+				return "exports.push([module.id, " +
+					JSON.stringify("@import url(" + imp.url + ");") + ", " +
+					JSON.stringify(imp.mediaQuery) + "]);";
+			} else {
+				var importUrl = importUrlPrefix + imp.url;
+				return "exports.i(require(" + loaderUtils.stringifyRequest(this, importUrl) + "), " + JSON.stringify(imp.mediaQuery) + ");";
+			}
+		}, this).join("\n");
+
+		function importItemMatcher(item) {
+			var match = result.importItemRegExp.exec(item);
+			var idx = +match[1];
+			var importItem = result.importItems[idx];
+			var importUrl = importUrlPrefix + importItem.url;
+			return "\" + require(" + loaderUtils.stringifyRequest(this, importUrl) + ").locals" +
+				"[" + JSON.stringify(importItem.export) + "] + \"";
+		}
+
+		cssAsString = cssAsString.replace(result.importItemRegExpG, importItemMatcher.bind(this));
+		if(query.url !== false) {
+			cssAsString = cssAsString.replace(result.urlItemRegExpG, function(item) {
+				var match = result.urlItemRegExp.exec(item);
+				var idx = +match[1];
+				var urlItem = result.urlItems[idx];
+				var url = resolve(urlItem.url);
+				idx = url.indexOf("?#");
+				if(idx < 0) idx = url.indexOf("#");
+				var urlRequest;
+				if(idx > 0) { // idx === 0 is catched by isUrlRequest
+					// in cases like url('webfont.eot?#iefix')
+					urlRequest = url.substr(0, idx);
+					return "\" + require(" + loaderUtils.stringifyRequest(this, urlRequest) + ") + \"" +
+							url.substr(idx);
+				}
+				urlRequest = url;
+				return "\" + require(" + loaderUtils.stringifyRequest(this, urlRequest) + ") + \"";
+			}.bind(this));
+		}
+
+
+		var exportJs = compileExports(result, importItemMatcher.bind(this), camelCaseKeys);
+		if (exportJs) {
+			exportJs = "exports.locals = " + exportJs + ";";
+		}
+
+		var moduleJs;
+		if(query.sourceMap && result.map) {
+			// add a SourceMap
+			map = result.map;
+			if(map.sources) {
+				map.sources = map.sources.map(function(source) {
+					return source.split("!").pop();
+				}, this);
+				map.sourceRoot = "";
+			}
+			map.file = map.file.split("!").pop();
+			map = JSON.stringify(map);
+			moduleJs = "exports.push([module.id, " + cssAsString + ", \"\", " + map + "]);";
+		} else {
+			moduleJs = "exports.push([module.id, " + cssAsString + ", \"\"]);";
+		}
+
+		// embed runtime
+		callback(null, "exports = module.exports = require(" +
+			loaderUtils.stringifyRequest(this, require.resolve("./css-base.js")) +
+			")(" + query.sourceMap + ");\n" +
+			"// imports\n" +
+			importJs + "\n\n" +
+			"// module\n" +
+			moduleJs + "\n\n" +
+			"// exports\n" +
+			exportJs);
+	}.bind(this));
+}
+```
+- example usage
+```shell
+n/a
+```
+
+#### <a name="apidoc.element.css-loader.toString"></a>[function <span class="apidocSignatureSpan">css-loader.</span>toString ()](#apidoc.element.css-loader.toString)
+- description and source-code
+```javascript
+toString = function () {
+    return toString;
+}
+```
+- example usage
+```shell
+...
+   ]
+}
+'''
+
+or
+
+'''js
+const cssText = require('./test.css').toString();
+
+console.log(cssText);
+'''
+
+If there are SourceMaps, they will also be included in the result string.
+
+### ImportLoaders
+...
+```
 
 
 
