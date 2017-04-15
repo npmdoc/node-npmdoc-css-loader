@@ -61,12 +61,185 @@
 
     <li class="apidocModuleLi"><a href="#apidoc.module.css-loader">module css-loader</a><ol>
 
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.css-loader.css-loader">
+            function <span class="apidocSignatureSpan"></span>css-loader
+            <span class="apidocSignatureSpan">(content, map)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.css-loader.toString">
+            function <span class="apidocSignatureSpan">css-loader.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
     </ol></li>
 
 </ol></div>
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.css-loader" id="apidoc.module.css-loader">module css-loader</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.css-loader.css-loader" id="apidoc.element.css-loader.css-loader">
+        function <span class="apidocSignatureSpan"></span>css-loader
+        <span class="apidocSignatureSpan">(content, map)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">css-loader = function (content, map) {
+	if(this.cacheable) this.cacheable();
+	var callback = this.async();
+	var query = loaderUtils.getOptions(this) || {};
+	var root = query.root;
+	var moduleMode = query.modules || query.module;
+	var camelCaseKeys = query.camelCase || query.camelcase;
+	var resolve = createResolver(query.alias);
+
+	if(map !== null &#x26;&#x26; typeof map !== &#x22;string&#x22;) {
+		map = JSON.stringify(map);
+	}
+
+	processCss(content, map, {
+		mode: moduleMode ? &#x22;local&#x22; : &#x22;global&#x22;,
+		from: loaderUtils.getRemainingRequest(this),
+		to: loaderUtils.getCurrentRequest(this),
+		query: query,
+		minimize: this.minimize,
+		loaderContext: this
+	}, function(err, result) {
+		if(err) return callback(err);
+
+		var cssAsString = JSON.stringify(result.source);
+
+		// for importing CSS
+		var importUrlPrefix = getImportPrefix(this, query);
+
+		var alreadyImported = {};
+		var importJs = result.importItems.filter(function(imp) {
+			if(!imp.mediaQuery) {
+				if(alreadyImported[imp.url])
+					return false;
+				alreadyImported[imp.url] = true;
+			}
+			return true;
+		}).map(function(imp) {
+			if(!loaderUtils.isUrlRequest(imp.url, root)) {
+				return &#x22;exports.push([module.id, &#x22; +
+					JSON.stringify(&#x22;@import url(&#x22; + imp.url + &#x22;);&#x22;) + &#x22;, &#x22; +
+					JSON.stringify(imp.mediaQuery) + &#x22;]);&#x22;;
+			} else {
+				var importUrl = importUrlPrefix + imp.url;
+				return &#x22;exports.i(require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;), &#x22; + JSON.stringify(imp.mediaQuery) + &#x22;);&#x22;;
+			}
+		}, this).join(&#x22;\n&#x22;);
+
+		function importItemMatcher(item) {
+			var match = result.importItemRegExp.exec(item);
+			var idx = +match[1];
+			var importItem = result.importItems[idx];
+			var importUrl = importUrlPrefix + importItem.url;
+			return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;).locals&#x22; +
+				&#x22;[&#x22; + JSON.stringify(importItem.export) + &#x22;] + \&#x22;&#x22;;
+		}
+
+		cssAsString = cssAsString.replace(result.importItemRegExpG, importItemMatcher.bind(this));
+		if(query.url !== false) {
+			cssAsString = cssAsString.replace(result.urlItemRegExpG, function(item) {
+				var match = result.urlItemRegExp.exec(item);
+				var idx = +match[1];
+				var urlItem = result.urlItems[idx];
+				var url = resolve(urlItem.url);
+				idx = url.indexOf(&#x22;?#&#x22;);
+				if(idx &#x3c; 0) idx = url.indexOf(&#x22;#&#x22;);
+				var urlRequest;
+				if(idx &#x3e; 0) { // idx === 0 is catched by isUrlRequest
+					// in cases like url(&#x27;webfont.eot?#iefix&#x27;)
+					urlRequest = url.substr(0, idx);
+					return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, urlRequest) + &#x22;) + \&#x22;&#x22; +
+							url.substr(idx);
+				}
+				urlRequest = url;
+				return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, urlRequest) + &#x22;) + \&#x22;&#x22;;
+			}.bind(this));
+		}
+
+
+		var exportJs = compileExports(result, importItemMatcher.bind(this), camelCaseKeys);
+		if (exportJs) {
+			exportJs = &#x22;exports.locals = &#x22; + exportJs + &#x22;;&#x22;;
+		}
+
+		var moduleJs;
+		if(query.sourceMap &#x26;&#x26; result.map) {
+			// add a SourceMap
+			map = result.map;
+			if(map.sources) {
+				map.sources = map.sources.map(function(source) {
+					return source.split(&#x22;!&#x22;).pop();
+				}, this);
+				map.sourceRoot = &#x22;&#x22;;
+			}
+			map.file = map.file.split(&#x22;!&#x22;).pop();
+			map = JSON.stringify(map);
+			moduleJs = &#x22;exports.push([module.id, &#x22; + cssAsString + &#x22;, \&#x22;\&#x22;, &#x22; + map + &#x22;]);&#x22;;
+		} else {
+			moduleJs = &#x22;exports.push([module.id, &#x22; + cssAsString + &#x22;, \&#x22;\&#x22;]);&#x22;;
+		}
+
+		// embed runtime
+		callback(null, &#x22;exports = module.exports = require(&#x22; +
+			loaderUtils.stringifyRequest(this, require.resolve(&#x22;./css-base.js&#x22;)) +
+			&#x22;)(&#x22; + query.sourceMap + &#x22;);\n&#x22; +
+			&#x22;// imports\n&#x22; +
+			importJs + &#x22;\n\n&#x22; +
+			&#x22;// module\n&#x22; +
+			moduleJs + &#x22;\n\n&#x22; +
+			&#x22;// exports\n&#x22; +
+			exportJs);
+	}.bind(this));
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.css-loader.toString" id="apidoc.element.css-loader.toString">
+        function <span class="apidocSignatureSpan">css-loader.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return toString;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+   ]
+}
+```
+
+or
+
+```js
+const cssText = require(&#x27;./test.css&#x27;).<span class="apidocCodeKeywordSpan">toString</span>();
+
+console.log(cssText);
+```
+
+If there are SourceMaps, they will also be included in the result string.
+
+### ImportLoaders
+...</pre></li>
+    </ul>
+
 
 </div>
 

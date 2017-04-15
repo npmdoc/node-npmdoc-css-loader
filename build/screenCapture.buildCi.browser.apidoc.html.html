@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/webpack/css-loader#readme"
-
-    >css-loader (v0.28.0)</a>
+    <a href="https://github.com/webpack/css-loader#readme">css-loader (v0.28.0)</a>
 </h1>
 <h4>css loader module for webpack</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.css-loader">module css-loader</a><ol>
 
@@ -103,12 +96,12 @@
 	var camelCaseKeys = query.camelCase || query.camelcase;
 	var resolve = createResolver(query.alias);
 
-	if(map !== null &#x26;&#x26; typeof map !== &#x22;string&#x22;) {
+	if(map !== null &amp;&amp; typeof map !== "string") {
 		map = JSON.stringify(map);
 	}
 
 	processCss(content, map, {
-		mode: moduleMode ? &#x22;local&#x22; : &#x22;global&#x22;,
+		mode: moduleMode ? "local" : "global",
 		from: loaderUtils.getRemainingRequest(this),
 		to: loaderUtils.getCurrentRequest(this),
 		query: query,
@@ -132,22 +125,22 @@
 			return true;
 		}).map(function(imp) {
 			if(!loaderUtils.isUrlRequest(imp.url, root)) {
-				return &#x22;exports.push([module.id, &#x22; +
-					JSON.stringify(&#x22;@import url(&#x22; + imp.url + &#x22;);&#x22;) + &#x22;, &#x22; +
-					JSON.stringify(imp.mediaQuery) + &#x22;]);&#x22;;
+				return "exports.push([module.id, " +
+					JSON.stringify("@import url(" + imp.url + ");") + ", " +
+					JSON.stringify(imp.mediaQuery) + "]);";
 			} else {
 				var importUrl = importUrlPrefix + imp.url;
-				return &#x22;exports.i(require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;), &#x22; + JSON.stringify(imp.mediaQuery) + &#x22;);&#x22;;
+				return "exports.i(require(" + loaderUtils.stringifyRequest(this, importUrl) + "), " + JSON.stringify(imp.mediaQuery) + ");";
 			}
-		}, this).join(&#x22;\n&#x22;);
+		}, this).join("\n");
 
 		function importItemMatcher(item) {
 			var match = result.importItemRegExp.exec(item);
 			var idx = +match[1];
 			var importItem = result.importItems[idx];
 			var importUrl = importUrlPrefix + importItem.url;
-			return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;).locals&#x22; +
-				&#x22;[&#x22; + JSON.stringify(importItem.export) + &#x22;] + \&#x22;&#x22;;
+			return "\" + require(" + loaderUtils.stringifyRequest(this, importUrl) + ").locals" +
+				"[" + JSON.stringify(importItem.export) + "] + \"";
 		}
 
 		cssAsString = cssAsString.replace(result.importItemRegExpG, importItemMatcher.bind(this));
@@ -157,52 +150,52 @@
 				var idx = +match[1];
 				var urlItem = result.urlItems[idx];
 				var url = resolve(urlItem.url);
-				idx = url.indexOf(&#x22;?#&#x22;);
-				if(idx &#x3c; 0) idx = url.indexOf(&#x22;#&#x22;);
+				idx = url.indexOf("?#");
+				if(idx &lt; 0) idx = url.indexOf("#");
 				var urlRequest;
-				if(idx &#x3e; 0) { // idx === 0 is catched by isUrlRequest
-					// in cases like url(&#x27;webfont.eot?#iefix&#x27;)
+				if(idx &gt; 0) { // idx === 0 is catched by isUrlRequest
+					// in cases like url('webfont.eot?#iefix')
 					urlRequest = url.substr(0, idx);
-					return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, urlRequest) + &#x22;) + \&#x22;&#x22; +
+					return "\" + require(" + loaderUtils.stringifyRequest(this, urlRequest) + ") + \"" +
 							url.substr(idx);
 				}
 				urlRequest = url;
-				return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, urlRequest) + &#x22;) + \&#x22;&#x22;;
+				return "\" + require(" + loaderUtils.stringifyRequest(this, urlRequest) + ") + \"";
 			}.bind(this));
 		}
 
 
 		var exportJs = compileExports(result, importItemMatcher.bind(this), camelCaseKeys);
 		if (exportJs) {
-			exportJs = &#x22;exports.locals = &#x22; + exportJs + &#x22;;&#x22;;
+			exportJs = "exports.locals = " + exportJs + ";";
 		}
 
 		var moduleJs;
-		if(query.sourceMap &#x26;&#x26; result.map) {
+		if(query.sourceMap &amp;&amp; result.map) {
 			// add a SourceMap
 			map = result.map;
 			if(map.sources) {
 				map.sources = map.sources.map(function(source) {
-					return source.split(&#x22;!&#x22;).pop();
+					return source.split("!").pop();
 				}, this);
-				map.sourceRoot = &#x22;&#x22;;
+				map.sourceRoot = "";
 			}
-			map.file = map.file.split(&#x22;!&#x22;).pop();
+			map.file = map.file.split("!").pop();
 			map = JSON.stringify(map);
-			moduleJs = &#x22;exports.push([module.id, &#x22; + cssAsString + &#x22;, \&#x22;\&#x22;, &#x22; + map + &#x22;]);&#x22;;
+			moduleJs = "exports.push([module.id, " + cssAsString + ", \"\", " + map + "]);";
 		} else {
-			moduleJs = &#x22;exports.push([module.id, &#x22; + cssAsString + &#x22;, \&#x22;\&#x22;]);&#x22;;
+			moduleJs = "exports.push([module.id, " + cssAsString + ", \"\"]);";
 		}
 
 		// embed runtime
-		callback(null, &#x22;exports = module.exports = require(&#x22; +
-			loaderUtils.stringifyRequest(this, require.resolve(&#x22;./css-base.js&#x22;)) +
-			&#x22;)(&#x22; + query.sourceMap + &#x22;);\n&#x22; +
-			&#x22;// imports\n&#x22; +
-			importJs + &#x22;\n\n&#x22; +
-			&#x22;// module\n&#x22; +
-			moduleJs + &#x22;\n\n&#x22; +
-			&#x22;// exports\n&#x22; +
+		callback(null, "exports = module.exports = require(" +
+			loaderUtils.stringifyRequest(this, require.resolve("./css-base.js")) +
+			")(" + query.sourceMap + ");\n" +
+			"// imports\n" +
+			importJs + "\n\n" +
+			"// module\n" +
+			moduleJs + "\n\n" +
+			"// exports\n" +
 			exportJs);
 	}.bind(this));
 }</pre></li>
@@ -222,14 +215,14 @@
     return toString;
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
-   ]
+Â&nbsp;Â&nbsp; ]
 }
 ```
 
 or
 
 ```js
-const cssText = require(&#x27;./test.css&#x27;).<span class="apidocCodeKeywordSpan">toString</span>();
+const cssText = require('./test.css').<span class="apidocCodeKeywordSpan">toString</span>();
 
 console.log(cssText);
 ```
@@ -249,3 +242,4 @@ If there are SourceMaps, they will also be included in the result string.
     ]
 </div>
 </div>
+</body></html>
