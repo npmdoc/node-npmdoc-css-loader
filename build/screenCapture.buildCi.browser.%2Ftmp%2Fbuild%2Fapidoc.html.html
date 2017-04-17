@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/webpack/css-loader#readme"
-
-    >css-loader (v0.28.0)</a>
+    <a href="https://github.com/webpack/css-loader#readme">css-loader (v0.28.0)</a>
 </h1>
 <h4>css loader module for webpack</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.css-loader">module css-loader</a><ol>
 
@@ -279,12 +272,12 @@
 	var camelCaseKeys = query.camelCase || query.camelcase;
 	var resolve = createResolver(query.alias);
 
-	if(map !== null &#x26;&#x26; typeof map !== &#x22;string&#x22;) {
+	if(map !== null &amp;&amp; typeof map !== "string") {
 		map = JSON.stringify(map);
 	}
 
 	processCss(content, map, {
-		mode: moduleMode ? &#x22;local&#x22; : &#x22;global&#x22;,
+		mode: moduleMode ? "local" : "global",
 		from: loaderUtils.getRemainingRequest(this),
 		to: loaderUtils.getCurrentRequest(this),
 		query: query,
@@ -308,22 +301,22 @@
 			return true;
 		}).map(function(imp) {
 			if(!loaderUtils.isUrlRequest(imp.url, root)) {
-				return &#x22;exports.push([module.id, &#x22; +
-					JSON.stringify(&#x22;@import url(&#x22; + imp.url + &#x22;);&#x22;) + &#x22;, &#x22; +
-					JSON.stringify(imp.mediaQuery) + &#x22;]);&#x22;;
+				return "exports.push([module.id, " +
+					JSON.stringify("@import url(" + imp.url + ");") + ", " +
+					JSON.stringify(imp.mediaQuery) + "]);";
 			} else {
 				var importUrl = importUrlPrefix + imp.url;
-				return &#x22;exports.i(require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;), &#x22; + JSON.stringify(imp.mediaQuery) + &#x22;);&#x22;;
+				return "exports.i(require(" + loaderUtils.stringifyRequest(this, importUrl) + "), " + JSON.stringify(imp.mediaQuery) + ");";
 			}
-		}, this).join(&#x22;\n&#x22;);
+		}, this).join("\n");
 
 		function importItemMatcher(item) {
 			var match = result.importItemRegExp.exec(item);
 			var idx = +match[1];
 			var importItem = result.importItems[idx];
 			var importUrl = importUrlPrefix + importItem.url;
-			return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;).locals&#x22; +
-				&#x22;[&#x22; + JSON.stringify(importItem.export) + &#x22;] + \&#x22;&#x22;;
+			return "\" + require(" + loaderUtils.stringifyRequest(this, importUrl) + ").locals" +
+				"[" + JSON.stringify(importItem.export) + "] + \"";
 		}
 
 		cssAsString = cssAsString.replace(result.importItemRegExpG, importItemMatcher.bind(this));
@@ -333,52 +326,52 @@
 				var idx = +match[1];
 				var urlItem = result.urlItems[idx];
 				var url = resolve(urlItem.url);
-				idx = url.indexOf(&#x22;?#&#x22;);
-				if(idx &#x3c; 0) idx = url.indexOf(&#x22;#&#x22;);
+				idx = url.indexOf("?#");
+				if(idx &lt; 0) idx = url.indexOf("#");
 				var urlRequest;
-				if(idx &#x3e; 0) { // idx === 0 is catched by isUrlRequest
-					// in cases like url(&#x27;webfont.eot?#iefix&#x27;)
+				if(idx &gt; 0) { // idx === 0 is catched by isUrlRequest
+					// in cases like url('webfont.eot?#iefix')
 					urlRequest = url.substr(0, idx);
-					return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, urlRequest) + &#x22;) + \&#x22;&#x22; +
+					return "\" + require(" + loaderUtils.stringifyRequest(this, urlRequest) + ") + \"" +
 							url.substr(idx);
 				}
 				urlRequest = url;
-				return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, urlRequest) + &#x22;) + \&#x22;&#x22;;
+				return "\" + require(" + loaderUtils.stringifyRequest(this, urlRequest) + ") + \"";
 			}.bind(this));
 		}
 
 
 		var exportJs = compileExports(result, importItemMatcher.bind(this), camelCaseKeys);
 		if (exportJs) {
-			exportJs = &#x22;exports.locals = &#x22; + exportJs + &#x22;;&#x22;;
+			exportJs = "exports.locals = " + exportJs + ";";
 		}
 
 		var moduleJs;
-		if(query.sourceMap &#x26;&#x26; result.map) {
+		if(query.sourceMap &amp;&amp; result.map) {
 			// add a SourceMap
 			map = result.map;
 			if(map.sources) {
 				map.sources = map.sources.map(function(source) {
-					return source.split(&#x22;!&#x22;).pop();
+					return source.split("!").pop();
 				}, this);
-				map.sourceRoot = &#x22;&#x22;;
+				map.sourceRoot = "";
 			}
-			map.file = map.file.split(&#x22;!&#x22;).pop();
+			map.file = map.file.split("!").pop();
 			map = JSON.stringify(map);
-			moduleJs = &#x22;exports.push([module.id, &#x22; + cssAsString + &#x22;, \&#x22;\&#x22;, &#x22; + map + &#x22;]);&#x22;;
+			moduleJs = "exports.push([module.id, " + cssAsString + ", \"\", " + map + "]);";
 		} else {
-			moduleJs = &#x22;exports.push([module.id, &#x22; + cssAsString + &#x22;, \&#x22;\&#x22;]);&#x22;;
+			moduleJs = "exports.push([module.id, " + cssAsString + ", \"\"]);";
 		}
 
 		// embed runtime
-		callback(null, &#x22;exports = module.exports = require(&#x22; +
-			loaderUtils.stringifyRequest(this, require.resolve(&#x22;./css-base.js&#x22;)) +
-			&#x22;)(&#x22; + query.sourceMap + &#x22;);\n&#x22; +
-			&#x22;// imports\n&#x22; +
-			importJs + &#x22;\n\n&#x22; +
-			&#x22;// module\n&#x22; +
-			moduleJs + &#x22;\n\n&#x22; +
-			&#x22;// exports\n&#x22; +
+		callback(null, "exports = module.exports = require(" +
+			loaderUtils.stringifyRequest(this, require.resolve("./css-base.js")) +
+			")(" + query.sourceMap + ");\n" +
+			"// imports\n" +
+			importJs + "\n\n" +
+			"// module\n" +
+			moduleJs + "\n\n" +
+			"// exports\n" +
 			exportJs);
 	}.bind(this));
 }</pre></li>
@@ -396,14 +389,14 @@
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function compileExports(result, importItemMatcher, camelCaseKeys) {
   if (!Object.keys(result.exports).length) {
-    return &#x22;&#x22;;
+    return "";
   }
 
   var exportJs = Object.keys(result.exports).reduce(function(res, key) {
     var valueAsString = JSON.stringify(result.exports[key]);
     valueAsString = valueAsString.replace(result.importItemRegExpG, importItemMatcher);
     function addEntry(k) {
-      res.push(&#x22;\t&#x22; + JSON.stringify(k) + &#x22;: &#x22; + valueAsString);
+      res.push("\t" + JSON.stringify(k) + ": " + valueAsString);
     }
 
     var targetKey;
@@ -415,17 +408,17 @@
           addEntry(targetKey);
         }
         break;
-      case &#x27;dashes&#x27;:
+      case 'dashes':
         addEntry(key);
         targetKey = dashesCamelCase(key);
         if (targetKey !== key) {
           addEntry(targetKey);
         }
         break;
-      case &#x27;only&#x27;:
+      case 'only':
         addEntry(camelCase(key));
         break;
-      case &#x27;dashesOnly&#x27;:
+      case 'dashesOnly':
         addEntry(dashesCamelCase(key));
         break;
       default:
@@ -433,9 +426,9 @@
         break;
     }
     return res;
-  }, []).join(&#x22;,\n&#x22;);
+  }, []).join(",\n");
 
-  return &#x22;{\n&#x22; + exportJs + &#x22;\n}&#x22;;
+  return "{\n" + exportJs + "\n}";
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
@@ -450,7 +443,7 @@
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function createResolver(alias) {
-	if(typeof alias !== &#x22;object&#x22; || Array.isArray(alias)) {
+	if(typeof alias !== "object" || Array.isArray(alias)) {
 		return function(url) {
 			return url
 		};
@@ -463,7 +456,7 @@
 			onlyModule = true;
 			key = key.substr(0, key.length - 1);
 		}
-		if(typeof obj === &#x22;string&#x22;) {
+		if(typeof obj === "string") {
 			obj = {
 				alias: obj
 			};
@@ -478,7 +471,7 @@
 	return function(url) {
 		alias.forEach(function(obj) {
 			var name = obj.name;
-			if(url === name || (!obj.onlyModule &#x26;&#x26; url.startsWith(name + &#x22;/&#x22;))) {
+			if(url === name || (!obj.onlyModule &amp;&amp; url.startsWith(name + "/"))) {
 				url = obj.alias + url.substr(name.length);
 			}
 		});
@@ -505,34 +498,34 @@
 		return this.map(function (item) {
 			var content = cssWithMappingToString(item, useSourceMap);
 			if(item[2]) {
-				return &#x22;@media &#x22; + item[2] + &#x22;{&#x22; + content + &#x22;}&#x22;;
+				return "@media " + item[2] + "{" + content + "}";
 			} else {
 				return content;
 			}
-		}).join(&#x22;&#x22;);
+		}).join("");
 	};
 
 	// import a list of modules into the list
 	list.i = function(modules, mediaQuery) {
-		if(typeof modules === &#x22;string&#x22;)
-			modules = [[null, modules, &#x22;&#x22;]];
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
 		var alreadyImportedModules = {};
-		for(var i = 0; i &#x3c; this.length; i++) {
+		for(var i = 0; i &lt; this.length; i++) {
 			var id = this[i][0];
-			if(typeof id === &#x22;number&#x22;)
+			if(typeof id === "number")
 				alreadyImportedModules[id] = true;
 		}
-		for(i = 0; i &#x3c; modules.length; i++) {
+		for(i = 0; i &lt; modules.length; i++) {
 			var item = modules[i];
 			// skip already imported module
 			// this implementation is not 100% perfect for weird media query combinations
 			//  when a module is imported multiple times with different media queries.
 			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== &#x22;number&#x22; || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery &#x26;&#x26; !item[2]) {
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery &amp;&amp; !item[2]) {
 					item[2] = mediaQuery;
 				} else if(mediaQuery) {
-					item[2] = &#x22;(&#x22; + item[2] + &#x22;) and (&#x22; + mediaQuery + &#x22;)&#x22;;
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
 				}
 				list.push(item);
 			}
@@ -554,13 +547,13 @@
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function getImportPrefix(loaderContext, query) {
 	if(query.importLoaders === false)
-		return &#x22;&#x22;;
+		return "";
 	var importLoaders = parseInt(query.importLoaders, 10) || 0;
 	var loadersRequest = loaderContext.loaders.slice(
 		loaderContext.loaderIndex,
 		loaderContext.loaderIndex + 1 + importLoaders
-	).map(function(x) { return x.request; }).join(&#x22;!&#x22;);
-	return &#x22;-!&#x22; + loadersRequest + &#x22;!&#x22;;
+	).map(function(x) { return x.request; }).join("!");
+	return "-!" + loadersRequest + "!";
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
@@ -576,13 +569,13 @@
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function getLocalIdent(loaderContext, localIdentName, localName, options) {
 	if(!options.context)
-		options.context = loaderContext.options &#x26;&#x26; typeof loaderContext.options.context === &#x22;string&#x22; ? loaderContext.options.context :
+		options.context = loaderContext.options &amp;&amp; typeof loaderContext.options.context === "string" ? loaderContext.options.context :
 loaderContext.context;
 	var request = path.relative(options.context, loaderContext.resourcePath);
-	options.content = options.hashPrefix + request + &#x22;+&#x22; + localName;
+	options.content = options.hashPrefix + request + "+" + localName;
 	localIdentName = localIdentName.replace(/\[local\]/gi, localName);
 	var hash = loaderUtils.interpolateName(loaderContext, localIdentName, options);
-	return hash.replace(new RegExp(&#x22;[^a-zA-Z0-9\\-_\u00A0-\uFFFF]&#x22;, &#x22;g&#x22;), &#x22;-&#x22;).replace(/^((-?[0-9])|--)/, &#x22;_$1&#x22;);
+	return hash.replace(new RegExp("[^a-zA-Z0-9\\-_\u00A0-\uFFFF]", "g"), "-").replace(/^((-?[0-9])|--)/, "_$1");
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
@@ -605,12 +598,12 @@ loaderContext.context;
 	var camelCaseKeys = query.camelCase || query.camelcase;
 	var resolve = createResolver(query.alias);
 
-	if(map !== null &#x26;&#x26; typeof map !== &#x22;string&#x22;) {
+	if(map !== null &amp;&amp; typeof map !== "string") {
 		map = JSON.stringify(map);
 	}
 
 	processCss(content, map, {
-		mode: moduleMode ? &#x22;local&#x22; : &#x22;global&#x22;,
+		mode: moduleMode ? "local" : "global",
 		from: loaderUtils.getRemainingRequest(this),
 		to: loaderUtils.getCurrentRequest(this),
 		query: query,
@@ -634,22 +627,22 @@ loaderContext.context;
 			return true;
 		}).map(function(imp) {
 			if(!loaderUtils.isUrlRequest(imp.url, root)) {
-				return &#x22;exports.push([module.id, &#x22; +
-					JSON.stringify(&#x22;@import url(&#x22; + imp.url + &#x22;);&#x22;) + &#x22;, &#x22; +
-					JSON.stringify(imp.mediaQuery) + &#x22;]);&#x22;;
+				return "exports.push([module.id, " +
+					JSON.stringify("@import url(" + imp.url + ");") + ", " +
+					JSON.stringify(imp.mediaQuery) + "]);";
 			} else {
 				var importUrl = importUrlPrefix + imp.url;
-				return &#x22;exports.i(require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;), &#x22; + JSON.stringify(imp.mediaQuery) + &#x22;);&#x22;;
+				return "exports.i(require(" + loaderUtils.stringifyRequest(this, importUrl) + "), " + JSON.stringify(imp.mediaQuery) + ");";
 			}
-		}, this).join(&#x22;\n&#x22;);
+		}, this).join("\n");
 
 		function importItemMatcher(item) {
 			var match = result.importItemRegExp.exec(item);
 			var idx = +match[1];
 			var importItem = result.importItems[idx];
 			var importUrl = importUrlPrefix + importItem.url;
-			return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;).locals&#x22; +
-				&#x22;[&#x22; + JSON.stringify(importItem.export) + &#x22;] + \&#x22;&#x22;;
+			return "\" + require(" + loaderUtils.stringifyRequest(this, importUrl) + ").locals" +
+				"[" + JSON.stringify(importItem.export) + "] + \"";
 		}
 
 		cssAsString = cssAsString.replace(result.importItemRegExpG, importItemMatcher.bind(this));
@@ -659,52 +652,52 @@ loaderContext.context;
 				var idx = +match[1];
 				var urlItem = result.urlItems[idx];
 				var url = resolve(urlItem.url);
-				idx = url.indexOf(&#x22;?#&#x22;);
-				if(idx &#x3c; 0) idx = url.indexOf(&#x22;#&#x22;);
+				idx = url.indexOf("?#");
+				if(idx &lt; 0) idx = url.indexOf("#");
 				var urlRequest;
-				if(idx &#x3e; 0) { // idx === 0 is catched by isUrlRequest
-					// in cases like url(&#x27;webfont.eot?#iefix&#x27;)
+				if(idx &gt; 0) { // idx === 0 is catched by isUrlRequest
+					// in cases like url('webfont.eot?#iefix')
 					urlRequest = url.substr(0, idx);
-					return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, urlRequest) + &#x22;) + \&#x22;&#x22; +
+					return "\" + require(" + loaderUtils.stringifyRequest(this, urlRequest) + ") + \"" +
 							url.substr(idx);
 				}
 				urlRequest = url;
-				return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, urlRequest) + &#x22;) + \&#x22;&#x22;;
+				return "\" + require(" + loaderUtils.stringifyRequest(this, urlRequest) + ") + \"";
 			}.bind(this));
 		}
 
 
 		var exportJs = compileExports(result, importItemMatcher.bind(this), camelCaseKeys);
 		if (exportJs) {
-			exportJs = &#x22;exports.locals = &#x22; + exportJs + &#x22;;&#x22;;
+			exportJs = "exports.locals = " + exportJs + ";";
 		}
 
 		var moduleJs;
-		if(query.sourceMap &#x26;&#x26; result.map) {
+		if(query.sourceMap &amp;&amp; result.map) {
 			// add a SourceMap
 			map = result.map;
 			if(map.sources) {
 				map.sources = map.sources.map(function(source) {
-					return source.split(&#x22;!&#x22;).pop();
+					return source.split("!").pop();
 				}, this);
-				map.sourceRoot = &#x22;&#x22;;
+				map.sourceRoot = "";
 			}
-			map.file = map.file.split(&#x22;!&#x22;).pop();
+			map.file = map.file.split("!").pop();
 			map = JSON.stringify(map);
-			moduleJs = &#x22;exports.push([module.id, &#x22; + cssAsString + &#x22;, \&#x22;\&#x22;, &#x22; + map + &#x22;]);&#x22;;
+			moduleJs = "exports.push([module.id, " + cssAsString + ", \"\", " + map + "]);";
 		} else {
-			moduleJs = &#x22;exports.push([module.id, &#x22; + cssAsString + &#x22;, \&#x22;\&#x22;]);&#x22;;
+			moduleJs = "exports.push([module.id, " + cssAsString + ", \"\"]);";
 		}
 
 		// embed runtime
-		callback(null, &#x22;exports = module.exports = require(&#x22; +
-			loaderUtils.stringifyRequest(this, require.resolve(&#x22;./css-base.js&#x22;)) +
-			&#x22;)(&#x22; + query.sourceMap + &#x22;);\n&#x22; +
-			&#x22;// imports\n&#x22; +
-			importJs + &#x22;\n\n&#x22; +
-			&#x22;// module\n&#x22; +
-			moduleJs + &#x22;\n\n&#x22; +
-			&#x22;// exports\n&#x22; +
+		callback(null, "exports = module.exports = require(" +
+			loaderUtils.stringifyRequest(this, require.resolve("./css-base.js")) +
+			")(" + query.sourceMap + ");\n" +
+			"// imports\n" +
+			importJs + "\n\n" +
+			"// module\n" +
+			moduleJs + "\n\n" +
+			"// exports\n" +
 			exportJs);
 	}.bind(this));
 }</pre></li>
@@ -728,7 +721,7 @@ loaderContext.context;
 	var camelCaseKeys = query.camelCase || query.camelcase;
 
 	processCss(content, null, {
-		mode: moduleMode ? &#x22;local&#x22; : &#x22;global&#x22;,
+		mode: moduleMode ? "local" : "global",
 		query: query,
 		minimize: this.minimize,
 		loaderContext: this
@@ -743,13 +736,13 @@ loaderContext.context;
 			var idx = +match[1];
 			var importItem = result.importItems[idx];
 			var importUrl = importUrlPrefix + importItem.url;
-			return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;)&#x22; +
-				&#x22;[&#x22; + JSON.stringify(importItem.export) + &#x22;] + \&#x22;&#x22;;
+			return "\" + require(" + loaderUtils.stringifyRequest(this, importUrl) + ")" +
+				"[" + JSON.stringify(importItem.export) + "] + \"";
 		}
 
 		var exportJs = compileExports(result, importItemMatcher.bind(this), camelCaseKeys);
 		if (exportJs) {
-			exportJs = &#x22;module.exports = &#x22; + exportJs + &#x22;;&#x22;;
+			exportJs = "module.exports = " + exportJs + ";";
 		}
 
 
@@ -772,10 +765,10 @@ loaderContext.context;
 	var query = options.query;
 	var root = query.root;
 	var context = query.context;
-	var localIdentName = query.localIdentName || &#x22;[hash:base64]&#x22;;
+	var localIdentName = query.localIdentName || "[hash:base64]";
 	var localIdentRegExp = query.localIdentRegExp;
 	var forceMinimize = query.minimize;
-	var minimize = typeof forceMinimize !== &#x22;undefined&#x22; ? !!forceMinimize : options.minimize;
+	var minimize = typeof forceMinimize !== "undefined" ? !!forceMinimize : options.minimize;
 
 	var customGetLocalIdent = query.getLocalIdent || getLocalIdent;
 
@@ -807,7 +800,7 @@ loaderContext.context;
 			generateScopedName: function generateScopedName (exportName) {
 				return customGetLocalIdent(options.loaderContext, localIdentName, exportName, {
 					regExp: localIdentRegExp,
-					hashPrefix: query.hashPrefix || &#x22;&#x22;,
+					hashPrefix: query.hashPrefix || "",
 					context: context
 				});
 			}
@@ -816,10 +809,10 @@ loaderContext.context;
 	]);
 
 	if(minimize) {
-		var cssnano = require(&#x22;cssnano&#x22;);
+		var cssnano = require("cssnano");
 		var minimizeOptions = assign({}, query.minimize);
-		[&#x22;zindex&#x22;, &#x22;normalizeUrl&#x22;, &#x22;discardUnused&#x22;, &#x22;mergeIdents&#x22;, &#x22;reduceIdents&#x22;, &#x22;autoprefixer&#x22;].forEach(function(name) {
-			if(typeof minimizeOptions[name] === &#x22;undefined&#x22;)
+		["zindex", "normalizeUrl", "discardUnused", "mergeIdents", "reduceIdents", "autoprefixer"].forEach(function(name) {
+			if(typeof minimizeOptions[name] === "undefined")
 				minimizeOptions[name] = false;
 		});
 		pipeline.use(cssnano(minimizeOptions));
@@ -827,7 +820,7 @@ loaderContext.context;
 
 	pipeline.process(inputSource, {
 		// we need a prefix to avoid path rewriting of PostCSS
-		from: &#x22;/css-loader!&#x22; + options.from,
+		from: "/css-loader!" + options.from,
 		to: options.to,
 		map: {
 			prev: inputMap,
@@ -838,7 +831,7 @@ loaderContext.context;
 	}).then(function(result) {
 		callback(null, {
 			source: result.css,
-			map: result.map &#x26;&#x26; result.map.toJSON(),
+			map: result.map &amp;&amp; result.map.toJSON(),
 			exports: parserOptions.exports,
 			importItems: parserOptions.importItems,
 			importItemRegExpG: /___CSS_LOADER_IMPORT___([0-9]+)___/g,
@@ -848,11 +841,11 @@ loaderContext.context;
 			urlItemRegExp: /___CSS_LOADER_URL___([0-9]+)___/
 		});
 	}).catch(function(err) {
-		if (err.name === &#x27;CssSyntaxError&#x27;) {
+		if (err.name === 'CssSyntaxError') {
 			var wrappedError = new CSSLoaderError(
-				&#x27;Syntax Error&#x27;,
+				'Syntax Error',
 				err.reason,
-				err.line != null &#x26;&#x26; err.column != null
+				err.line != null &amp;&amp; err.column != null
 					? {line: err.line, column: err.column}
 					: null,
 				err.input.source
@@ -879,14 +872,14 @@ loaderContext.context;
     return text;
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
-   ]
+Â&nbsp;Â&nbsp; ]
 }
 ```
 
 or
 
 ```js
-const cssText = require(&#x27;./test.css&#x27;).<span class="apidocCodeKeywordSpan">toString</span>();
+const cssText = require('./test.css').<span class="apidocCodeKeywordSpan">toString</span>();
 
 console.log(cssText);
 ```
@@ -913,14 +906,14 @@ If there are SourceMaps, they will also be included in the result string.
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function compileExports(result, importItemMatcher, camelCaseKeys) {
   if (!Object.keys(result.exports).length) {
-    return &#x22;&#x22;;
+    return "";
   }
 
   var exportJs = Object.keys(result.exports).reduce(function(res, key) {
     var valueAsString = JSON.stringify(result.exports[key]);
     valueAsString = valueAsString.replace(result.importItemRegExpG, importItemMatcher);
     function addEntry(k) {
-      res.push(&#x22;\t&#x22; + JSON.stringify(k) + &#x22;: &#x22; + valueAsString);
+      res.push("\t" + JSON.stringify(k) + ": " + valueAsString);
     }
 
     var targetKey;
@@ -932,17 +925,17 @@ If there are SourceMaps, they will also be included in the result string.
           addEntry(targetKey);
         }
         break;
-      case &#x27;dashes&#x27;:
+      case 'dashes':
         addEntry(key);
         targetKey = dashesCamelCase(key);
         if (targetKey !== key) {
           addEntry(targetKey);
         }
         break;
-      case &#x27;only&#x27;:
+      case 'only':
         addEntry(camelCase(key));
         break;
-      case &#x27;dashesOnly&#x27;:
+      case 'dashesOnly':
         addEntry(dashesCamelCase(key));
         break;
       default:
@@ -950,9 +943,9 @@ If there are SourceMaps, they will also be included in the result string.
         break;
     }
     return res;
-  }, []).join(&#x22;,\n&#x22;);
+  }, []).join(",\n");
 
-  return &#x22;{\n&#x22; + exportJs + &#x22;\n}&#x22;;
+  return "{\n" + exportJs + "\n}";
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
@@ -972,7 +965,7 @@ If there are SourceMaps, they will also be included in the result string.
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function createResolver(alias) {
-	if(typeof alias !== &#x22;object&#x22; || Array.isArray(alias)) {
+	if(typeof alias !== "object" || Array.isArray(alias)) {
 		return function(url) {
 			return url
 		};
@@ -985,7 +978,7 @@ If there are SourceMaps, they will also be included in the result string.
 			onlyModule = true;
 			key = key.substr(0, key.length - 1);
 		}
-		if(typeof obj === &#x22;string&#x22;) {
+		if(typeof obj === "string") {
 			obj = {
 				alias: obj
 			};
@@ -1000,7 +993,7 @@ If there are SourceMaps, they will also be included in the result string.
 	return function(url) {
 		alias.forEach(function(obj) {
 			var name = obj.name;
-			if(url === name || (!obj.onlyModule &#x26;&#x26; url.startsWith(name + &#x22;/&#x22;))) {
+			if(url === name || (!obj.onlyModule &amp;&amp; url.startsWith(name + "/"))) {
 				url = obj.alias + url.substr(name.length);
 			}
 		});
@@ -1032,34 +1025,34 @@ If there are SourceMaps, they will also be included in the result string.
 		return this.map(function (item) {
 			var content = cssWithMappingToString(item, useSourceMap);
 			if(item[2]) {
-				return &#x22;@media &#x22; + item[2] + &#x22;{&#x22; + content + &#x22;}&#x22;;
+				return "@media " + item[2] + "{" + content + "}";
 			} else {
 				return content;
 			}
-		}).join(&#x22;&#x22;);
+		}).join("");
 	};
 
 	// import a list of modules into the list
 	list.i = function(modules, mediaQuery) {
-		if(typeof modules === &#x22;string&#x22;)
-			modules = [[null, modules, &#x22;&#x22;]];
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
 		var alreadyImportedModules = {};
-		for(var i = 0; i &#x3c; this.length; i++) {
+		for(var i = 0; i &lt; this.length; i++) {
 			var id = this[i][0];
-			if(typeof id === &#x22;number&#x22;)
+			if(typeof id === "number")
 				alreadyImportedModules[id] = true;
 		}
-		for(i = 0; i &#x3c; modules.length; i++) {
+		for(i = 0; i &lt; modules.length; i++) {
 			var item = modules[i];
 			// skip already imported module
 			// this implementation is not 100% perfect for weird media query combinations
 			//  when a module is imported multiple times with different media queries.
 			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== &#x22;number&#x22; || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery &#x26;&#x26; !item[2]) {
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery &amp;&amp; !item[2]) {
 					item[2] = mediaQuery;
 				} else if(mediaQuery) {
-					item[2] = &#x22;(&#x22; + item[2] + &#x22;) and (&#x22; + mediaQuery + &#x22;)&#x22;;
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
 				}
 				list.push(item);
 			}
@@ -1086,13 +1079,13 @@ If there are SourceMaps, they will also be included in the result string.
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function getImportPrefix(loaderContext, query) {
 	if(query.importLoaders === false)
-		return &#x22;&#x22;;
+		return "";
 	var importLoaders = parseInt(query.importLoaders, 10) || 0;
 	var loadersRequest = loaderContext.loaders.slice(
 		loaderContext.loaderIndex,
 		loaderContext.loaderIndex + 1 + importLoaders
-	).map(function(x) { return x.request; }).join(&#x22;!&#x22;);
-	return &#x22;-!&#x22; + loadersRequest + &#x22;!&#x22;;
+	).map(function(x) { return x.request; }).join("!");
+	return "-!" + loadersRequest + "!";
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
@@ -1113,13 +1106,13 @@ If there are SourceMaps, they will also be included in the result string.
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function getLocalIdent(loaderContext, localIdentName, localName, options) {
 	if(!options.context)
-		options.context = loaderContext.options &#x26;&#x26; typeof loaderContext.options.context === &#x22;string&#x22; ? loaderContext.options.context :
+		options.context = loaderContext.options &amp;&amp; typeof loaderContext.options.context === "string" ? loaderContext.options.context :
 loaderContext.context;
 	var request = path.relative(options.context, loaderContext.resourcePath);
-	options.content = options.hashPrefix + request + &#x22;+&#x22; + localName;
+	options.content = options.hashPrefix + request + "+" + localName;
 	localIdentName = localIdentName.replace(/\[local\]/gi, localName);
 	var hash = loaderUtils.interpolateName(loaderContext, localIdentName, options);
-	return hash.replace(new RegExp(&#x22;[^a-zA-Z0-9\\-_\u00A0-\uFFFF]&#x22;, &#x22;g&#x22;), &#x22;-&#x22;).replace(/^((-?[0-9])|--)/, &#x22;_$1&#x22;);
+	return hash.replace(new RegExp("[^a-zA-Z0-9\\-_\u00A0-\uFFFF]", "g"), "-").replace(/^((-?[0-9])|--)/, "_$1");
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
@@ -1146,7 +1139,7 @@ loaderContext.context;
 	var camelCaseKeys = query.camelCase || query.camelcase;
 
 	processCss(content, null, {
-		mode: moduleMode ? &#x22;local&#x22; : &#x22;global&#x22;,
+		mode: moduleMode ? "local" : "global",
 		query: query,
 		minimize: this.minimize,
 		loaderContext: this
@@ -1161,13 +1154,13 @@ loaderContext.context;
 			var idx = +match[1];
 			var importItem = result.importItems[idx];
 			var importUrl = importUrlPrefix + importItem.url;
-			return &#x22;\&#x22; + require(&#x22; + loaderUtils.stringifyRequest(this, importUrl) + &#x22;)&#x22; +
-				&#x22;[&#x22; + JSON.stringify(importItem.export) + &#x22;] + \&#x22;&#x22;;
+			return "\" + require(" + loaderUtils.stringifyRequest(this, importUrl) + ")" +
+				"[" + JSON.stringify(importItem.export) + "] + \"";
 		}
 
 		var exportJs = compileExports(result, importItemMatcher.bind(this), camelCaseKeys);
 		if (exportJs) {
-			exportJs = &#x22;module.exports = &#x22; + exportJs + &#x22;;&#x22;;
+			exportJs = "module.exports = " + exportJs + ";";
 		}
 
 
@@ -1195,10 +1188,10 @@ loaderContext.context;
 	var query = options.query;
 	var root = query.root;
 	var context = query.context;
-	var localIdentName = query.localIdentName || &#x22;[hash:base64]&#x22;;
+	var localIdentName = query.localIdentName || "[hash:base64]";
 	var localIdentRegExp = query.localIdentRegExp;
 	var forceMinimize = query.minimize;
-	var minimize = typeof forceMinimize !== &#x22;undefined&#x22; ? !!forceMinimize : options.minimize;
+	var minimize = typeof forceMinimize !== "undefined" ? !!forceMinimize : options.minimize;
 
 	var customGetLocalIdent = query.getLocalIdent || getLocalIdent;
 
@@ -1230,7 +1223,7 @@ loaderContext.context;
 			generateScopedName: function generateScopedName (exportName) {
 				return customGetLocalIdent(options.loaderContext, localIdentName, exportName, {
 					regExp: localIdentRegExp,
-					hashPrefix: query.hashPrefix || &#x22;&#x22;,
+					hashPrefix: query.hashPrefix || "",
 					context: context
 				});
 			}
@@ -1239,10 +1232,10 @@ loaderContext.context;
 	]);
 
 	if(minimize) {
-		var cssnano = require(&#x22;cssnano&#x22;);
+		var cssnano = require("cssnano");
 		var minimizeOptions = assign({}, query.minimize);
-		[&#x22;zindex&#x22;, &#x22;normalizeUrl&#x22;, &#x22;discardUnused&#x22;, &#x22;mergeIdents&#x22;, &#x22;reduceIdents&#x22;, &#x22;autoprefixer&#x22;].forEach(function(name) {
-			if(typeof minimizeOptions[name] === &#x22;undefined&#x22;)
+		["zindex", "normalizeUrl", "discardUnused", "mergeIdents", "reduceIdents", "autoprefixer"].forEach(function(name) {
+			if(typeof minimizeOptions[name] === "undefined")
 				minimizeOptions[name] = false;
 		});
 		pipeline.use(cssnano(minimizeOptions));
@@ -1250,7 +1243,7 @@ loaderContext.context;
 
 	pipeline.process(inputSource, {
 		// we need a prefix to avoid path rewriting of PostCSS
-		from: &#x22;/css-loader!&#x22; + options.from,
+		from: "/css-loader!" + options.from,
 		to: options.to,
 		map: {
 			prev: inputMap,
@@ -1261,7 +1254,7 @@ loaderContext.context;
 	}).then(function(result) {
 		callback(null, {
 			source: result.css,
-			map: result.map &#x26;&#x26; result.map.toJSON(),
+			map: result.map &amp;&amp; result.map.toJSON(),
 			exports: parserOptions.exports,
 			importItems: parserOptions.importItems,
 			importItemRegExpG: /___CSS_LOADER_IMPORT___([0-9]+)___/g,
@@ -1271,11 +1264,11 @@ loaderContext.context;
 			urlItemRegExp: /___CSS_LOADER_URL___([0-9]+)___/
 		});
 	}).catch(function(err) {
-		if (err.name === &#x27;CssSyntaxError&#x27;) {
+		if (err.name === 'CssSyntaxError') {
 			var wrappedError = new CSSLoaderError(
-				&#x27;Syntax Error&#x27;,
+				'Syntax Error',
 				err.reason,
-				err.line != null &#x26;&#x26; err.column != null
+				err.line != null &amp;&amp; err.column != null
 					? {line: err.line, column: err.column}
 					: null,
 				err.input.source
@@ -1305,14 +1298,14 @@ loaderContext.context;
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
-   ]
+Â&nbsp;Â&nbsp; ]
 }
 ```
 
 or
 
 ```js
-const cssText = require(&#x27;./test.css&#x27;).<span class="apidocCodeKeywordSpan">toString</span>();
+const cssText = require('./test.css').<span class="apidocCodeKeywordSpan">toString</span>();
 
 console.log(cssText);
 ```
@@ -1332,3 +1325,4 @@ If there are SourceMaps, they will also be included in the result string.
     ]
 </div>
 </div>
+</body></html>
