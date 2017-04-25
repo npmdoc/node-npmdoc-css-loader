@@ -26,8 +26,8 @@
 <tspan x="10" y="378">  ├─┬ cssnano@3.10.0 </tspan>
 <tspan x="10" y="394">  │ ├─┬ autoprefixer@6.7.7 </tspan>
 <tspan x="10" y="410">  │ │ ├─┬ browserslist@1.7.7 </tspan>
-<tspan x="10" y="426">  │ │ │ └── electron-to-chromium@1.3.3 </tspan>
-<tspan x="10" y="442">  │ │ ├── caniuse-db@1.0.30000655 </tspan>
+<tspan x="10" y="426">  │ │ │ └── electron-to-chromium@1.3.8 </tspan>
+<tspan x="10" y="442">  │ │ ├── caniuse-db@1.0.30000660 </tspan>
 <tspan x="10" y="458">  │ │ ├── normalize-range@0.1.2 </tspan>
 <tspan x="10" y="474">  │ │ └── num2fraction@1.2.2 </tspan>
 <tspan x="10" y="490">  │ ├── decamelize@1.2.0 </tspan>
@@ -79,7 +79,7 @@
 <tspan x="10" y="1226">  │ │ ├── is-absolute-url@2.1.0 </tspan>
 <tspan x="10" y="1242">  │ │ └─┬ normalize-url@1.9.1 </tspan>
 <tspan x="10" y="1258">  │ │   ├── prepend-http@1.0.4 </tspan>
-<tspan x="10" y="1274">  │ │   ├─┬ query-string@4.3.3 </tspan>
+<tspan x="10" y="1274">  │ │   ├─┬ query-string@4.3.4 </tspan>
 <tspan x="10" y="1290">  │ │   │ └── strict-uri-encode@1.1.0 </tspan>
 <tspan x="10" y="1306">  │ │   └─┬ sort-keys@1.1.2 </tspan>
 <tspan x="10" y="1322">  │ │     └── is-plain-obj@1.1.0 </tspan>
