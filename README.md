@@ -1,4 +1,7 @@
-# api documentation for  [css-loader (v0.28.0)](https://github.com/webpack/css-loader#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-css-loader.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-css-loader) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-css-loader.svg)](https://travis-ci.org/npmdoc/node-npmdoc-css-loader)
+# npmdoc-css-loader
+
+#### basic api documentation for  [css-loader (v0.28.0)](https://github.com/webpack/css-loader#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-css-loader.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-css-loader) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-css-loader.svg)](https://travis-ci.org/npmdoc/node-npmdoc-css-loader)
+
 #### css loader module for webpack
 
 [![NPM](https://nodei.co/npm/css-loader.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/css-loader)
@@ -104,7 +107,8 @@
         "travis:lint": "npm run lint",
         "travis:test": "npm run cover"
     },
-    "version": "0.28.0"
+    "version": "0.28.0",
+    "bin": {}
 }
 ```
 
